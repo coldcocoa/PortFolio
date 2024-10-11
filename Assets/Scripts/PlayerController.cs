@@ -5,6 +5,7 @@ using static PlayerController;
 
 public class PlayerController : MonoBehaviour
 {
+    public GameObject player;
     public int PlayerHP;
     public int PlayerMaxHP;
     public int moveSpeed = 20;
@@ -12,6 +13,9 @@ public class PlayerController : MonoBehaviour
     public float jumpDSpeed = 130f;
     public PLAYERSTATE playerState;
 
+
+    private Vector2 StartPos;
+    private Vector2 EndPos;
     public enum PLAYERSTATE
     {
         IDLE = 0,
@@ -47,10 +51,39 @@ public class PlayerController : MonoBehaviour
                 break;
         }
         transform.position += Vector3.forward * moveSpeed * Time.deltaTime; // z축 움직이기
-    
+
+        if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            StartPos = Input.GetTouch(0).position;
+        }
+
+        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
+        {
+            EndPos = Input.GetTouch(0).position;
+
+            if(EndPos.x< StartPos.x)
+            {
+                
+                Left();
+            }
+            if (EndPos.x > StartPos.x)
+            {
+                Right();
+            }
+        }
+
+
     }
 
-    
+    public void Right()
+    {
+        player.transform.position = new Vector3(player.transform.position.x +1, player.transform.position.y,player.transform.position.z);
+    }
+
+    public void Left()
+    {
+        player.transform.position = new Vector3(player.transform.position.x - 1, player.transform.position.y, player.transform.position.z);
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Enemy"))
