@@ -6,6 +6,11 @@ using static PlayerController;
 public class PlayerController : MonoBehaviour
 {
     public GameObject player;
+    private Rigidbody rb;
+    public float jumpForce = 700f;
+    private bool jumpAllowed = false;
+
+
     public int PlayerHP;
     public int PlayerMaxHP;
     public int moveSpeed = 20;
@@ -29,7 +34,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -70,11 +75,15 @@ public class PlayerController : MonoBehaviour
             {
                 Right();
             }
+            if(EndPos.y > StartPos.y && rb.velocity.y == 0)
+            {
+                JumpIfAllowed();
+            }
         }
-
-
+     
     }
 
+    
     public void Right()
     {
         player.transform.position = new Vector3(player.transform.position.x +1, player.transform.position.y,player.transform.position.z);
@@ -83,6 +92,13 @@ public class PlayerController : MonoBehaviour
     public void Left()
     {
         player.transform.position = new Vector3(player.transform.position.x - 1, player.transform.position.y, player.transform.position.z);
+    }
+    
+    private void JumpIfAllowed()
+    {
+
+        transform.Translate(0, jumpUSpeed * Time.deltaTime, 0);
+
     }
     private void OnTriggerEnter(Collider other)
     {

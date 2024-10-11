@@ -47,14 +47,4 @@ public class AreaSpawner : MonoBehaviour
         clone.GetComponent<Area>().SetUp(this,playerTransform);
         areaIndex++;
     }
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

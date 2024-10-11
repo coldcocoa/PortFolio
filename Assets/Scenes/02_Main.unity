@@ -779,6 +779,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1831774565}
+  jumpForce: 10
   PlayerHP: 1
   PlayerMaxHP: 1
   moveSpeed: 40
