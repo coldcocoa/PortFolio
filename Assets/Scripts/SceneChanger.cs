@@ -9,4 +9,14 @@ public class SceneChanger : MonoBehaviour
     {
         SceneManager.LoadScene(1);
     }
+
+    public void RestartScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void GoRobby()
+    {
+        SceneManager.LoadScene(0);
+    }
 }
