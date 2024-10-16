@@ -7,6 +7,19 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    //public GameManager speedMgr;
+    Rigidbody rb;
+    public Text coinText;
+    public float coin = 0;
+
+    public float booster = 0;
+    public float boosterMaxCnt = 4;
+    public float boosterCurTime = 0;
+    public float boosterCoolTime = 20f;
+    public Slider boosterSlider;
+    bool isbooster = false;
+
+
     public GameObject player;
     public GameObject DeadPanel;
     public Text deadText;    
@@ -40,7 +53,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       
+        rb = GetComponent<Rigidbody>();
     }
     // Update is called once per frame
     void Update()
@@ -48,6 +61,7 @@ public class PlayerController : MonoBehaviour
         transform.position += Vector3.forward * moveSpeed * Time.deltaTime; // z축 움직이기
 
         deltaPos = Vector2.zero;
+
         switch (playerState)
         {
             case PLAYERSTATE.IDLE:
@@ -61,8 +75,10 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
             case PLAYERSTATE.DOWN:
-                transform.Translate(0, -jumpDSpeed * Time.deltaTime, 0);
-                if(transform.position.y <= 0.5)
+
+                rb.AddForce(Vector3.down * jumpDSpeed, ForceMode.Impulse);
+
+                if (transform.position.y <= 0.5)
                 {
                     playerState = PLAYERSTATE.IDLE;
                 }
@@ -100,13 +116,28 @@ public class PlayerController : MonoBehaviour
                 else if (deltaPos.x > 100)
                     Left();
                 else if (deltaPos.y < -100)
-                {
-                   
+                {               
                     Jump();              
                 }
             }
             
-        }       
+        }
+
+        if (isbooster == true)
+        {
+            //isGod = true;
+            Time.timeScale = 3f;
+            boosterCurTime += Time.deltaTime;
+            if (boosterCurTime > boosterCoolTime)
+            {
+                Time.timeScale = 1f;
+                isbooster = false;
+                booster = 0;
+                boosterCurTime = 0;
+                //isGod = false;
+                boosterSlider.value = 0;
+            }
+        }
     }
     
     public void Jump()
@@ -115,7 +146,11 @@ public class PlayerController : MonoBehaviour
         if (jumpCnt < 1)
         {
             playerState = PLAYERSTATE.JUMP;
-            transform.Translate(0, jumpUSpeed * Time.deltaTime, 0);         
+            
+            if (rb != null)
+            {
+                rb.AddForce(Vector3.up * jumpUSpeed, ForceMode.Impulse);
+            }
             jumpCnt++;
         }
         
@@ -137,5 +172,33 @@ public class PlayerController : MonoBehaviour
         {           
             playerState = PLAYERSTATE.DEAD;
         }
+
+        if (other.gameObject.CompareTag("Coin"))
+        {
+            coinScore();
+        }
+
+        if (other.gameObject.tag == "Booster")
+        {
+            booster++;
+            BoosterGage();
+            if (booster >= boosterMaxCnt)
+            {
+                // 부스터 온!!!!!!!!!!
+                isbooster = true;
+            }
+        }
+    }
+
+
+    public void coinScore()
+    {
+        coin += 1;
+        coinText.text = "골드 : " + coin.ToString();
+    }
+
+    public void BoosterGage()
+    {
+        boosterSlider.value += 0.25f;
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class Score : MonoBehaviour
 {
     public Text scoreText;
+    
     public GameObject player;
     public float score = 0;
     
@@ -13,7 +14,7 @@ public class Score : MonoBehaviour
     {
         UpdateScoreText();
         player = GameObject.Find("Player").GetComponent<PlayerController>().player;
-
+        
     }
 
     // Update is called once per frame
@@ -21,10 +22,13 @@ public class Score : MonoBehaviour
     {
         score = Mathf.FloorToInt(player.transform.position.z);
         UpdateScoreText();
+        
     }
 
     public void UpdateScoreText()
     {
-        scoreText.text = "점수: " + score.ToString(); 
+        scoreText.text = "점수 : " + score.ToString() + "M"; 
     }
+
+    
 }
