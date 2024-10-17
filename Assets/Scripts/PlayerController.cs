@@ -18,14 +18,15 @@ public class PlayerController : MonoBehaviour
     public float boosterCoolTime = 20f;
     public Slider boosterSlider;
     bool isbooster = false;
-
+    bool isGod = false;
 
     public GameObject player;
     public GameObject DeadPanel;
     public Text deadText;    
 
-    public int PlayerHP;
-    public int PlayerMaxHP;
+    public int PlayerHP = 2;
+    public int PlayerMaxHP = 2;
+
     public int moveSpeed = 20;
     public float jumpUSpeed = 300f;
     public float jumpDSpeed = 130f;
@@ -34,8 +35,8 @@ public class PlayerController : MonoBehaviour
     public int jumpCntMax = 1;
     
     public PLAYERSTATE playerState;
+    MeshRenderer playerMaterial;
 
-    
     private Vector2 StartPos = Vector2.zero;
     private Vector2 EndPos = Vector2.zero;
     private Vector2 deltaPos = Vector2.zero;
@@ -54,6 +55,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        playerMaterial = GetComponent<MeshRenderer>();
     }
     // Update is called once per frame
     void Update()
@@ -61,6 +63,8 @@ public class PlayerController : MonoBehaviour
         transform.position += Vector3.forward * moveSpeed * Time.deltaTime; // z축 움직이기
 
         deltaPos = Vector2.zero;
+
+        
 
         switch (playerState)
         {
@@ -84,8 +88,11 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
             case PLAYERSTATE.HIT:
+                OnDamaged();
+                playerState = PLAYERSTATE.IDLE;
                 break;
             case PLAYERSTATE.SLIDE:
+                Invoke("NonSlide", 1);
                 break;
             case PLAYERSTATE.LEFT:             
                 break;
@@ -119,13 +126,17 @@ public class PlayerController : MonoBehaviour
                 {               
                     Jump();              
                 }
-            }
+                else if (deltaPos.y > 100)
+                {
+                    Slide();
+                }
+            }                                                                                                                            
             
         }
 
         if (isbooster == true)
         {
-            //isGod = true;
+            isGod = true;
             Time.timeScale = 3f;
             boosterCurTime += Time.deltaTime;
             if (boosterCurTime > boosterCoolTime)
@@ -134,12 +145,13 @@ public class PlayerController : MonoBehaviour
                 isbooster = false;
                 booster = 0;
                 boosterCurTime = 0;
-                //isGod = false;
+                isGod = false;
                 boosterSlider.value = 0;
             }
         }
+        //playerEffect.SetActive(isGod);
     }
-    
+
     public void Jump()
     {
 
@@ -156,6 +168,20 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    public void Slide()
+    {
+        playerState = PLAYERSTATE.SLIDE;
+        GetComponent<BoxCollider>().size = new Vector3(1f, 0.1f,1f);
+        GetComponent<BoxCollider>().center = new Vector3(0, -0.44f, 0);
+        
+    }
+
+    public void NonSlide()
+    {
+        playerState = PLAYERSTATE.IDLE;
+        GetComponent<BoxCollider>().size = new Vector3(1f, 1f, 1f);
+        GetComponent<BoxCollider>().center = new Vector3(0, 0, 0);
+    }
     public void Right()
     {
         player.transform.position = new Vector3(player.transform.position.x +1, player.transform.position.y,player.transform.position.z);
@@ -168,9 +194,17 @@ public class PlayerController : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Enemy"))
-        {           
-            playerState = PLAYERSTATE.DEAD;
+        if (other.gameObject.CompareTag("Enemy") && isGod == false)
+        {
+
+            PlayerHP--;
+            playerState = PLAYERSTATE.HIT;
+            if(PlayerHP <= 0)
+            {
+                Debug.Log("게임 오버");
+                playerState = PLAYERSTATE.DEAD;
+            }
+
         }
 
         if (other.gameObject.CompareTag("Coin"))
@@ -183,10 +217,14 @@ public class PlayerController : MonoBehaviour
             booster++;
             BoosterGage();
             if (booster >= boosterMaxCnt)
-            {
-                // 부스터 온!!!!!!!!!!
+            {               
                 isbooster = true;
             }
+        }
+
+        if(other.gameObject.tag == "HPup")
+        {
+            PlayerHP++;
         }
     }
 
@@ -201,4 +239,20 @@ public class PlayerController : MonoBehaviour
     {
         boosterSlider.value += 0.25f;
     }
+
+    public void OnDamaged()
+    {
+        playerMaterial.material.color = new Color(1f, 0, 0, 1f);
+        isGod = true;
+        Invoke("OffDamaged", 3);        
+    }
+
+    public void OffDamaged()
+    {
+        playerMaterial.material.color = new Color(0, 0, 0, 1f);
+        isGod = false;
+        
+    }
+
+   
 }
