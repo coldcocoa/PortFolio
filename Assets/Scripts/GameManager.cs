@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    
+    public GameObject player;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        player = GameObject.Find("Player").GetComponent<PlayerController>().player;
     }
 
     // Update is called once per frame
@@ -23,5 +23,8 @@ public class GameManager : MonoBehaviour
         GameObject.Find("Player").GetComponent<PlayerController>().moveSpeed = 0;
     }
     
-
+    public void dir()
+    {
+        
+    }
 }

@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SceneChanger : MonoBehaviour
 {
+   
     public void SceneChange()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(2);
     }
 
     public void RestartScene()
@@ -17,6 +20,6 @@ public class SceneChanger : MonoBehaviour
 
     public void GoRobby()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 }

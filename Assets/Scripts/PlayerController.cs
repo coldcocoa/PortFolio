@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class PlayerController : MonoBehaviour
 {
     //public GameManager speedMgr;
@@ -12,13 +13,18 @@ public class PlayerController : MonoBehaviour
     public Text coinText;
     public float coin = 0;
 
+    public float limitX = 1f;
+    
     public float booster = 0;
     public float boosterMaxCnt = 4;
     public float boosterCurTime = 0;
     public float boosterCoolTime = 20f;
     public Slider boosterSlider;
+
     bool isbooster = false;
     bool isGod = false;
+    bool isDir250 = true;
+    bool isDir1000 = true;
 
     public GameObject player;
     public GameObject DeadPanel;
@@ -27,7 +33,10 @@ public class PlayerController : MonoBehaviour
     public int PlayerHP = 2;
     public int PlayerMaxHP = 2;
 
-    public int moveSpeed = 20;
+    public float moveSpeed = 10;
+    public float speedUp = 3f;
+    public float maxSpeed = 60;
+
     public float jumpUSpeed = 300f;
     public float jumpDSpeed = 130f;
     public float jumpLimitY = 3f;
@@ -54,6 +63,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Time.timeScale = 1f;
         rb = GetComponent<Rigidbody>();
         playerMaterial = GetComponent<MeshRenderer>();
     }
@@ -64,7 +74,7 @@ public class PlayerController : MonoBehaviour
 
         deltaPos = Vector2.zero;
 
-        
+        Checkdir();
 
         switch (playerState)
         {
@@ -152,6 +162,15 @@ public class PlayerController : MonoBehaviour
         //playerEffect.SetActive(isGod);
     }
 
+    private void FixedUpdate()
+    {
+       
+    }
+    private void LateUpdate()
+    {
+        
+        transform.position = new Vector3(Mathf.Clamp(transform.position.x, -limitX, limitX),transform.position.y,transform.position.z);
+    }
     public void Jump()
     {
 
@@ -173,6 +192,7 @@ public class PlayerController : MonoBehaviour
         playerState = PLAYERSTATE.SLIDE;
         GetComponent<BoxCollider>().size = new Vector3(1f, 0.1f,1f);
         GetComponent<BoxCollider>().center = new Vector3(0, -0.44f, 0);
+        GetComponent<Transform>().localScale = new Vector3(1f, 0.8f, 1f);
         
     }
 
@@ -181,6 +201,8 @@ public class PlayerController : MonoBehaviour
         playerState = PLAYERSTATE.IDLE;
         GetComponent<BoxCollider>().size = new Vector3(1f, 1f, 1f);
         GetComponent<BoxCollider>().center = new Vector3(0, 0, 0);
+        GetComponent<Transform>().localScale = new Vector3(1f, 1f, 1f);
+
     }
     public void Right()
     {
@@ -254,5 +276,18 @@ public class PlayerController : MonoBehaviour
         
     }
 
+    public void Checkdir()
+    {
+        if (transform.position.z > 250f && isDir250 == true)
+        {
+            moveSpeed = moveSpeed * speedUp;
+            isDir250 = false;
+        }
+        if (transform.position.z > 1000f &&  isDir1000 == true)
+        {
+            moveSpeed = moveSpeed * speedUp;
+            isDir1000 = false;
+        }
+    }
    
 }
