@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
+
 public class PlayerController : MonoBehaviour
 {
     //public GameManager speedMgr;
@@ -192,7 +193,7 @@ public class PlayerController : MonoBehaviour
         playerState = PLAYERSTATE.SLIDE;
         GetComponent<BoxCollider>().size = new Vector3(1f, 0.1f,1f);
         GetComponent<BoxCollider>().center = new Vector3(0, -0.44f, 0);
-        GetComponent<Transform>().localScale = new Vector3(1f, 0.8f, 1f);
+        GetComponent<Transform>().localScale = new Vector3(1f, 0.6f, 1f);
         
     }
 
@@ -211,7 +212,10 @@ public class PlayerController : MonoBehaviour
 
     public void Left()
     {
+        //Vector3 position = transform.position;
         player.transform.position = new Vector3(player.transform.position.x - 1, player.transform.position.y, player.transform.position.z);
+         //position.x = Mathf.Lerp(player.transform.position.x, player.transform.position.x-1, Time.deltaTime);
+        //player.transform.rotation = Quaternion.Euler(0, -45f, 0);
     }
 
     public void OnTriggerEnter(Collider other)
