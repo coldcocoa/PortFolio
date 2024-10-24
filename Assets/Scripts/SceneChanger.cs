@@ -21,5 +21,6 @@ public class SceneChanger : MonoBehaviour
     public void GoRobby()
     {
         SceneManager.LoadScene(1);
+        Time.timeScale = 1;
     }
 }

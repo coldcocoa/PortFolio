@@ -10,13 +10,17 @@ public class ContinueBtn : MonoBehaviour
     public int countdownTime;
     public TextMeshProUGUI countdownDisplay;
     //public TextMeshProUGUI countimage;
-    
 
-   
+    public void Start()
+    {
+        countdownTime = 3;
+    }
+
     public void CountDown()
     {
         StartCoroutine(CountdownToStart());
         //Invoke("SetactiveText()", 1f);
+        
     }
 
     IEnumerator CountdownToStart()
@@ -33,7 +37,7 @@ public class ContinueBtn : MonoBehaviour
         yield return new WaitForSecondsRealtime(1f); // 1√  ¥Î±‚
         countdownDisplay.text = "";
 
-
+        setUPcount();
     }
 
     /*IEnumerator FadeCoroutine()
@@ -57,5 +61,9 @@ public class ContinueBtn : MonoBehaviour
     public void SetactiveText()
     {
         countdownDisplay.text = "";
+    }
+    public void setUPcount()
+    {
+        countdownTime = 3;
     }
 }

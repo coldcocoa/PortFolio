@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,9 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    //public GameObject hitcolor;
+
+    private Score scoreScript;
     //public GameManager speedMgr;
     Rigidbody rb;
     public Text coinText;
@@ -43,7 +47,8 @@ public class PlayerController : MonoBehaviour
     public float jumpLimitY = 3f;
     public int jumpCnt = 0;
     public int jumpCntMax = 1;
-    
+
+    public float resurrection = 1;
     public PLAYERSTATE playerState;
     MeshRenderer playerMaterial;
 
@@ -59,7 +64,8 @@ public class PlayerController : MonoBehaviour
         SLIDE, //4
         LEFT,//5
         RIGHT, //6
-        DEAD //7
+        DEAD, //7
+        RESURRECTION //8
     }
     // Start is called before the first frame update
     void Start()
@@ -67,6 +73,8 @@ public class PlayerController : MonoBehaviour
         Time.timeScale = 1f;
         rb = GetComponent<Rigidbody>();
         playerMaterial = GetComponent<MeshRenderer>();
+        scoreScript = FindObjectOfType<Score>();
+        //hitcolor = GetComponentInChildren<Material>();
     }
     // Update is called once per frame
     void Update()
@@ -111,9 +119,16 @@ public class PlayerController : MonoBehaviour
                 break;
             case PLAYERSTATE.DEAD:
                 moveSpeed = 0;               
-                DeadPanel.SetActive(true);          
-                
+                DeadPanel.SetActive(true);
+                scoreScript.DeadScore();
+                isGod = true;
               break;
+            case PLAYERSTATE.RESURRECTION:
+                
+                DeadPanel.SetActive(false);
+                moveSpeed = 25;
+                Invoke("Resurrectionoption", 3f);
+                break;
 
         }
         
@@ -162,11 +177,7 @@ public class PlayerController : MonoBehaviour
         }
         //playerEffect.SetActive(isGod);
     }
-
-    private void FixedUpdate()
-    {
-       
-    }
+   
     private void LateUpdate()
     {
         
@@ -174,27 +185,30 @@ public class PlayerController : MonoBehaviour
     }
     public void Jump()
     {
-
-        if (jumpCnt < 1)
+       if(playerState != PLAYERSTATE.HIT & playerState != PLAYERSTATE.SLIDE)
         {
-            playerState = PLAYERSTATE.JUMP;
-            
-            if (rb != null)
+            if (jumpCnt < 1)
             {
-                rb.AddForce(Vector3.up * jumpUSpeed, ForceMode.Impulse);
+                playerState = PLAYERSTATE.JUMP;
+
+                if (rb != null)
+                {
+                    rb.AddForce(Vector3.up * jumpUSpeed, ForceMode.Impulse);
+                }
+                jumpCnt++;
             }
-            jumpCnt++;
-        }
-        
+        }      
     }
 
     public void Slide()
     {
-        playerState = PLAYERSTATE.SLIDE;
-        GetComponent<BoxCollider>().size = new Vector3(1f, 0.1f,1f);
-        GetComponent<BoxCollider>().center = new Vector3(0, -0.44f, 0);
-        GetComponent<Transform>().localScale = new Vector3(1f, 0.6f, 1f);
-        
+        if(playerState != PLAYERSTATE.DOWN && playerState != PLAYERSTATE.JUMP)
+        {
+            playerState = PLAYERSTATE.SLIDE;
+            GetComponent<BoxCollider>().size = new Vector3(1f, 0.1f, 1f);
+            GetComponent<BoxCollider>().center = new Vector3(0, -0.44f, 0);
+            GetComponent<Transform>().localScale = new Vector3(1f, 0.6f, 1f);
+        }                           
     }
 
     public void NonSlide()
@@ -230,12 +244,15 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("게임 오버");
                 playerState = PLAYERSTATE.DEAD;
             }
+            Destroy(other.gameObject);
 
         }
 
         if (other.gameObject.CompareTag("Coin"))
         {
             coinScore();
+            DeadcoinScore();
+            Destroy(other.gameObject);
         }
 
         if (other.gameObject.tag == "Booster")
@@ -246,11 +263,13 @@ public class PlayerController : MonoBehaviour
             {               
                 isbooster = true;
             }
+            Destroy(other.gameObject);
         }
 
         if(other.gameObject.tag == "HPup")
         {
             PlayerHP++;
+            Destroy(other.gameObject);
         }
     }
 
@@ -261,6 +280,11 @@ public class PlayerController : MonoBehaviour
         coinText.text = "골드 : " + coin.ToString();
     }
 
+    public float DeadcoinScore()
+    {      
+        return coin;
+    }
+
     public void BoosterGage()
     {
         boosterSlider.value += 0.25f;
@@ -268,14 +292,14 @@ public class PlayerController : MonoBehaviour
 
     public void OnDamaged()
     {
-        playerMaterial.material.color = new Color(1f, 0, 0, 1f);
+        playerMaterial.material.color = new Color(1, 1, 1, 0.7f);
         isGod = true;
         Invoke("OffDamaged", 3);        
     }
 
     public void OffDamaged()
     {
-        playerMaterial.material.color = new Color(0, 0, 0, 1f);
+        playerMaterial.material.color = new Color(1, 1, 1, 1f);
         isGod = false;
         
     }
@@ -294,4 +318,20 @@ public class PlayerController : MonoBehaviour
         }
     }
    
+    public void ResurrectionBtn()
+    {
+       
+        if (resurrection >= 1)
+        {
+            resurrection--;
+            playerState = PLAYERSTATE.RESURRECTION;
+        }
+        
+    }
+    public void Resurrectionoption()
+    {
+        
+        playerState = PLAYERSTATE.IDLE;
+        isGod = false;
+    }
 }
