@@ -10,6 +10,7 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    public GameObject NON;
     //public GameObject hitcolor;
 
     private Score scoreScript;
@@ -70,6 +71,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
         Time.timeScale = 1f;
         rb = GetComponent<Rigidbody>();
         playerMaterial = GetComponent<MeshRenderer>();
@@ -122,12 +124,14 @@ public class PlayerController : MonoBehaviour
                 DeadPanel.SetActive(true);
                 scoreScript.DeadScore();
                 isGod = true;
+                Non();
               break;
             case PLAYERSTATE.RESURRECTION:
                 
                 DeadPanel.SetActive(false);
                 moveSpeed = 25;
                 Invoke("Resurrectionoption", 3f);
+                NON.SetActive(true);
                 break;
 
         }
@@ -333,5 +337,10 @@ public class PlayerController : MonoBehaviour
         
         playerState = PLAYERSTATE.IDLE;
         isGod = false;
+    }
+
+    public void Non()
+    {
+        NON.SetActive(false);
     }
 }

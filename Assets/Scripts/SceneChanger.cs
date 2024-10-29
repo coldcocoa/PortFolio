@@ -23,4 +23,9 @@ public class SceneChanger : MonoBehaviour
         SceneManager.LoadScene(1);
         Time.timeScale = 1;
     }
+
+    public void GoLoading()
+    {
+        SceneManager.LoadScene(0);
+    }
 }
