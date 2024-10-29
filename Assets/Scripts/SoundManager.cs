@@ -9,7 +9,8 @@ public class SoundManager : MonoBehaviour
     public AudioClip jumpSound;
     public AudioClip hitSound;
     public AudioClip buttonCanCelSound;
-
+    public AudioClip MainBgm;
+    public AudioClip RobbyBgm;
     private AudioSource audioSource;
 
     private void Awake()
@@ -45,5 +46,13 @@ public class SoundManager : MonoBehaviour
     public void PlayButtonCancelSound()
     {
         audioSource.PlayOneShot(buttonCanCelSound);
+    }
+    public void MainBGM()
+    {
+        audioSource.PlayOneShot(MainBgm);
+    }
+    public void RobbyBGM()
+    {
+        audioSource.PlayOneShot(RobbyBgm);
     }
 }
