@@ -11,6 +11,11 @@ public class SoundManager : MonoBehaviour
     public AudioClip buttonCanCelSound;
     public AudioClip MainBgm;
     public AudioClip RobbyBgm;
+    public AudioClip itemGet;
+    public AudioClip boosterGet;
+    public AudioClip boosterOn;
+    public AudioClip HPGet;
+    public AudioClip Sold;
     private AudioSource audioSource;
 
     private void Awake()
@@ -54,5 +59,26 @@ public class SoundManager : MonoBehaviour
     public void RobbyBGM()
     {
         audioSource.PlayOneShot(RobbyBgm);
+    }
+
+    public void ItemGet()
+    {
+        audioSource.PlayOneShot(itemGet);
+    }
+    public void BoosterGet()
+    {
+        audioSource.PlayOneShot(boosterGet);
+    }
+    public void BoosterOn()
+    {
+        audioSource.PlayOneShot(boosterOn);
+    }
+    public void HPGET()
+    {
+        audioSource.PlayOneShot(HPGet);
+    }
+    public void SOLD()
+    {
+        audioSource.PlayOneShot(Sold);
     }
 }

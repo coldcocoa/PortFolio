@@ -10,6 +10,9 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    private Vector3 targetPosition; // 목표 위치
+    private bool isMoving = false; // 이동 중인지 여부
+
     public GameObject NON;
     //public GameObject hitcolor;
 
@@ -31,7 +34,9 @@ public class PlayerController : MonoBehaviour
     bool isGod = false;
     bool isDir250 = true;
     bool isDir1000 = true;
-
+    
+    
+    public Transform Player; // 플레이어의 Transform
     public GameObject player;
     public GameObject DeadPanel;
     public Text deadText;    
@@ -40,6 +45,7 @@ public class PlayerController : MonoBehaviour
     public int PlayerMaxHP = 2;
 
     public float moveSpeed = 10;
+    public float rotateSpeed = 10;
     public float speedUp = 3f;
     public float maxSpeed = 60;
 
@@ -71,7 +77,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        Player = GetComponent<Transform>();
         Time.timeScale = 1f;
         rb = GetComponent<Rigidbody>();
         playerMaterial = GetComponent<MeshRenderer>();
@@ -137,7 +143,7 @@ public class PlayerController : MonoBehaviour
         }
         
 
-        if(Input.touches.Length > 0 )
+        if (Input.touches.Length > 0 )
         {
             if (Input.touches[0].phase == TouchPhase.Began )
             {
@@ -164,6 +170,7 @@ public class PlayerController : MonoBehaviour
             
         }
 
+
         if (isbooster == true)
         {
             isGod = true;
@@ -180,6 +187,23 @@ public class PlayerController : MonoBehaviour
             }
         }
         //playerEffect.SetActive(isGod);
+
+        if (isMoving)
+        {
+            // 현재 위치와 목표 위치를 보간
+            player.transform.position = new Vector3(
+                Mathf.Lerp(player.transform.position.x, targetPosition.x, Time.deltaTime * moveSpeed),
+                player.transform.position.y,
+                player.transform.position.z
+            );
+
+            // 목표 위치에 도달했는지 확인
+            if (Mathf.Abs(player.transform.position.x - targetPosition.x) < 0.15f)
+            {
+                isMoving = false; // 이동 완료
+                player.transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+        }
     }
    
     private void LateUpdate()
@@ -194,7 +218,7 @@ public class PlayerController : MonoBehaviour
             if (jumpCnt < 1)
             {
                 playerState = PLAYERSTATE.JUMP;
-
+                SoundManager.Instance.PlayJumpSound();
                 if (rb != null)
                 {
                     rb.AddForce(Vector3.up * jumpUSpeed, ForceMode.Impulse);
@@ -225,17 +249,24 @@ public class PlayerController : MonoBehaviour
     }
     public void Right()
     {
-        player.transform.position = new Vector3(player.transform.position.x +1, player.transform.position.y,player.transform.position.z);
+        transform.localRotation = Quaternion.Euler(0, 45, 0);
+        targetPosition = new Vector3(player.transform.position.x + 1, player.transform.position.y, player.transform.position.z);
+        isMoving = true; // 이동 시작
+        //transform.localRotation = Quaternion.Euler(0, 45, 0);       
+        //player.transform.position = new Vector3(player.transform.position.x +1, player.transform.position.y,player.transform.position.z);
     }
 
     public void Left()
     {
-        //Vector3 position = transform.position;
-        player.transform.position = new Vector3(player.transform.position.x - 1, player.transform.position.y, player.transform.position.z);
-         //position.x = Mathf.Lerp(player.transform.position.x, player.transform.position.x-1, Time.deltaTime);
-        //player.transform.rotation = Quaternion.Euler(0, -45f, 0);
+        transform.localRotation = Quaternion.Euler(0, -45, 0);
+        targetPosition = new Vector3(player.transform.position.x - 1, player.transform.position.y, player.transform.position.z);
+        isMoving = true; // 이동 시작
+        //transform.localRotation = Quaternion.Euler(0, -45, 0);        
+        //player.transform.position = new Vector3(player.transform.position.x - 1, player.transform.position.y, player.transform.position.z);
+
     }
 
+    
     public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Enemy") && isGod == false)
@@ -262,10 +293,12 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.tag == "Booster")
         {
             booster++;
+            SoundManager.Instance.BoosterGet();
             BoosterGage();
             if (booster >= boosterMaxCnt)
             {               
                 isbooster = true;
+                SoundManager.Instance.BoosterOn();
             }
             Destroy(other.gameObject);
         }
@@ -274,12 +307,14 @@ public class PlayerController : MonoBehaviour
         {
             PlayerHP++;
             Destroy(other.gameObject);
+            SoundManager.Instance.HPGET();
         }
     }
 
 
     public void coinScore()
     {
+        SoundManager.Instance.ItemGet();
         coin += 1;
         coinText.text = "골드 : " + coin.ToString();
     }
@@ -297,6 +332,7 @@ public class PlayerController : MonoBehaviour
     public void OnDamaged()
     {
         playerMaterial.material.color = new Color(1, 1, 1, 0.7f);
+        SoundManager.Instance.PlayHitSound();
         isGod = true;
         Invoke("OffDamaged", 3);        
     }

@@ -306,11 +306,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonClickSound: {fileID: 8300000, guid: 29bde6326b4c34ad8a12da475f79b50a, type: 3}
-  jumpSound: {fileID: 0}
-  hitSound: {fileID: 0}
+  jumpSound: {fileID: 8300000, guid: 2c5292ba5cf254919a6b9e2b18e04f49, type: 3}
+  hitSound: {fileID: 8300000, guid: 8b23b175a78d6b5458322e3a6c9905d0, type: 3}
   buttonCanCelSound: {fileID: 8300000, guid: 6e8772b49f34d402a90016ed445d8a2f, type: 3}
   MainBgm: {fileID: 8300000, guid: bf17d3a88e3294185953a4c2aa69b03d, type: 3}
   RobbyBgm: {fileID: 0}
+  itemGet: {fileID: 8300000, guid: 02f98902d77f7431cb0c64b9fe4744fc, type: 3}
+  boosterGet: {fileID: 8300000, guid: ba39bf8baf6d13046889b2d64822381a, type: 3}
+  boosterOn: {fileID: 8300000, guid: d654174ef194bd7479bf4b8d8f753318, type: 3}
+  HPGet: {fileID: 8300000, guid: cfce0cea076109f478783201b2a9f57f, type: 3}
 --- !u!4 &224698739
 Transform:
   m_ObjectHideFlags: 0
@@ -3767,14 +3771,14 @@ MonoBehaviour:
   booster: 0
   boosterMaxCnt: 4
   boosterCurTime: 0
-  boosterCoolTime: 20
+  boosterCoolTime: 15
   boosterSlider: {fileID: 895320900}
   player: {fileID: 1831774565}
   DeadPanel: {fileID: 1205313836}
   deadText: {fileID: 0}
   PlayerHP: 2
   PlayerMaxHP: 2
-  moveSpeed: 10
+  moveSpeed: 5
   speedUp: 3
   maxSpeed: 60
   jumpUSpeed: 10
@@ -4302,7 +4306,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: bf17d3a88e3294185953a4c2aa69b03d, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.15
   m_Pitch: 1
   Loop: 1
   Mute: 0
