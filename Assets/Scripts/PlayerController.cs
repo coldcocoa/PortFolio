@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
@@ -10,6 +11,9 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    public Text hpText;
+    public GameObject bgm;
+    
     private Vector3 targetPosition; // 목표 위치
     private bool isMoving = false; // 이동 중인지 여부
 
@@ -93,6 +97,7 @@ public class PlayerController : MonoBehaviour
 
         Checkdir();
 
+        HP();
         switch (playerState)
         {
             case PLAYERSTATE.IDLE:
@@ -129,13 +134,16 @@ public class PlayerController : MonoBehaviour
                 moveSpeed = 0;               
                 DeadPanel.SetActive(true);
                 scoreScript.DeadScore();
+                bgm.SetActive(false);
+                SoundManager.Instance.DeadSound();
                 isGod = true;
                 Non();
               break;
             case PLAYERSTATE.RESURRECTION:
                 
                 DeadPanel.SetActive(false);
-                moveSpeed = 25;
+                bgm.SetActive(true);
+                moveSpeed = 10;
                 Invoke("Resurrectionoption", 3f);
                 NON.SetActive(true);
                 break;
@@ -305,7 +313,11 @@ public class PlayerController : MonoBehaviour
 
         if(other.gameObject.tag == "HPup")
         {
-            PlayerHP++;
+            if (PlayerHP < PlayerMaxHP)
+            {
+                PlayerHP++;
+            }
+            
             Destroy(other.gameObject);
             SoundManager.Instance.HPGET();
         }
@@ -378,5 +390,10 @@ public class PlayerController : MonoBehaviour
     public void Non()
     {
         NON.SetActive(false);
+    }
+
+    public void HP()
+    {
+        hpText.text = "HP   : " + PlayerHP.ToString();
     }
 }

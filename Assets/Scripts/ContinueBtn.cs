@@ -23,12 +23,13 @@ public class ContinueBtn : MonoBehaviour
         
     }
 
-    IEnumerator CountdownToStart()
+   /* IEnumerator CountdownToStart()
     {
         Time.timeScale = 0f;
         while (countdownTime > 0)
         {
             countdownDisplay.text = countdownTime.ToString();
+            
             yield return new WaitForSecondsRealtime(1f);
             countdownTime--;         
         }
@@ -38,18 +39,25 @@ public class ContinueBtn : MonoBehaviour
         countdownDisplay.text = "";
 
         setUPcount();
-    }
-
-    /*IEnumerator FadeCoroutine()
-    {
-        float fadeC = 1f;
-        while ( fadeC < 0.05f)
-        {
-            fadeC -= 0.01f;
-            yield return new WaitForSeconds(0.01f);
-            countimage.color = new Color(0,0,0,fadeC);
-        }
     }*/
+
+    IEnumerator CountdownToStart()
+    {
+        float timer = countdownTime; // 별도의 타이머 변수 사용
+        while (timer > 0)
+        {
+            countdownDisplay.text = Mathf.Ceil(timer).ToString(); // 올림하여 표시
+
+            yield return new WaitForSecondsRealtime(1f);
+            timer--;
+        }
+        Time.timeScale = 1f;
+        countdownDisplay.text = "게임 시작";
+        yield return new WaitForSecondsRealtime(1f); // 1초 대기
+        countdownDisplay.text = "";
+        
+        setUPcount();
+    }
     public void stop()
     {
         Time.timeScale = 0;

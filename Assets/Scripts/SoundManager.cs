@@ -16,6 +16,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip boosterOn;
     public AudioClip HPGet;
     public AudioClip Sold;
+    public AudioClip deadSound;
     private AudioSource audioSource;
 
     private void Awake()
@@ -80,5 +81,9 @@ public class SoundManager : MonoBehaviour
     public void SOLD()
     {
         audioSource.PlayOneShot(Sold);
+    }
+    public void DeadSound()
+    {
+        audioSource.PlayOneShot(deadSound);
     }
 }
