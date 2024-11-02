@@ -3849,7 +3849,7 @@ MonoBehaviour:
   coin: 0
   limitX: 1
   booster: 0
-  boosterMaxCnt: 4
+  boosterMaxCnt: 2
   boosterCurTime: 0
   boosterCoolTime: 15
   boosterSlider: {fileID: 895320900}

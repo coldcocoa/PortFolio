@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
     public float limitX = 1f;
     
     public float booster = 0;
-    public float boosterMaxCnt = 4;
+    public float boosterMaxCnt = 2;
     public float boosterCurTime = 0;
     public float boosterCoolTime = 20f;
     public Slider boosterSlider;
@@ -338,7 +338,7 @@ public class PlayerController : MonoBehaviour
 
     public void BoosterGage()
     {
-        boosterSlider.value += 0.25f;
+        boosterSlider.value += 0.5f;
     }
 
     public void OnDamaged()
